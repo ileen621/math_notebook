@@ -1,7 +1,44 @@
-{% extends "base.html" %}
-{% block title %}首頁 - 數學記事本{% endblock %}
+{% extends 'base.html' %}
+
+{% block title %}首頁 | 數學線上記事本{% endblock %}
+
 {% block content %}
-<h1>歡迎使用數學線上記事本</h1>
-<p>這裡可以記錄您的數學公式，並即時預覽。</p>
-<a href="{{ url_for('note_edit') }}">開始新增筆記</a>
+<div class="row text-center">
+  <div class="col-md-4 mb-4">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">📄 筆記列表</h5>
+        <p class="card-text">瀏覽、管理你所有的筆記</p>
+        <a href="{{ url_for('note_list') }}" class="btn btn-outline-primary">前往</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-4">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">✏️ 新增筆記</h5>
+        <p class="card-text">記錄新的數學靈感與公式</p>
+        <a href="{{ url_for('note_edit') }}" class="btn btn-outline-primary">開始</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-4">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">🔍 搜尋筆記</h5>
+        <p class="card-text">快速找到特定關鍵詞</p>
+        <form method="get" action="{{ url_for('note_list') }}" class="d-flex">
+          <input
+            type="search"
+            name="q"
+            class="form-control me-2"
+            placeholder="輸入關鍵字…"
+            value=""
+          >
+          <button class="btn btn-outline-primary" type="submit">搜尋</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

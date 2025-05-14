@@ -1,0 +1,51 @@
+{# templates/note_detail.html #}
+{% extends 'base.html' %}
+
+{% block title %}{{ note.title }} | 數學記事本{% endblock %}
+
+{% block head_extra %}
+  <style>
+    /* ===== 隱藏富文字 toolbar ===== */
+    #editor-toolbar {
+      display: none !important;
+    }
+    /* ===== 可縮放的內容區 ===== */
+    #detail-editor {
+      background-color: #fffbe5;      /* 淡奶黃色底，模擬筆記本紙張 */
+      border: 2px solid indigo;       /* 靛藍色外框 */
+      padding: 1rem;
+      line-height: 1.5;
+      resize: vertical;               /* 垂直方向可拖拉 */
+      overflow: auto;
+      max-height: 80vh;               /* 最多八成視窗高 */
+      min-height: 200px;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+<div class="container note-detail-container">
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-white">
+      <h2 class="mb-0">{{ note.title }}</h2>
+      {% if note.category %}
+        <small class="text-muted">分類：{{ note.category }}</small>
+      {% endif %}
+    </div>
+    <div class="card-body">
+      {# 可選擇保留渲染過的 HTML 或純文字 #}
+      <div id="editor-toolbar"></div>
+      <div id="detail-editor">
+        {{ note.content|safe }}
+      </div>
+    </div>
+    <div class="card-footer text-end">
+      <a href="{{ url_for('note_edit', id=note.id) }}" class="btn btn-sm btn-primary">編輯</a>
+      <form action="{{ url_for('note_delete', id=note.id) }}" method="post" class="d-inline">
+        <button type="submit" class="btn btn-sm btn-danger">刪除</button>
+      </form>
+      <a href="{{ url_for('note_list') }}" class="btn btn-sm btn-secondary">返回列表</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

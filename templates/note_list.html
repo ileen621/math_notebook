@@ -1,16 +1,47 @@
-{% extends "base.html" %}
-{% block title %}筆記列表 - 數學記事本{% endblock %}
+{% extends 'base.html' %}
+{% block title %}筆記列表 | 數學線上記事本{% endblock %}
+
 {% block content %}
-  <h1>所有筆記</h1>
-  <ul>
-    {% for note in notes %}
-      <li>
-        <a href="{{ url_for('note_edit', id=note.id) }}">
-          {{ note.title }}
+<form method="get" action="{{ url_for('note_list') }}" class="mb-4 d-flex">
+  <input
+    type="search"
+    name="q"
+    class="form-control me-2"
+    placeholder="搜尋筆記…"
+    value="{{ q }}"
+  >
+  <button class="btn btn-primary" type="submit">搜尋</button>
+  {% if q %}
+    <a href="{{ url_for('note_list') }}" class="btn btn-secondary ms-2">清除</a>
+  {% endif %}
+</form>
+
+<div class="row">
+  {% for note in notes %}
+  <div class="col-md-4 mb-4">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">📌 {{ note.title }}</h5>
+        <p class="card-text"><small class="text-muted">{{ note.category }}</small></p>
+        <p class="card-text">{{ note.content[:100] }}{% if note.content|length > 100 %}…{% endif %}</p>
+
+        <a href="{{ url_for('note_detail', id=note.id) }}" class="btn btn-sm btn-outline-success me-2">
+          查看
         </a>
-      </li>
-    {% else %}
-      <li>目前沒有任何筆記。</li>
-    {% endfor %}
-  </ul>
+        <a href="{{ url_for('note_edit', id=note.id) }}" class="btn btn-sm btn-outline-primary me-2">
+          編輯
+        </a>
+        <form method="post" action="{{ url_for('note_delete', id=note.id) }}" class="d-inline">
+          <button class="btn btn-sm btn-outline-danger" type="submit"
+                  onclick="return confirm('確定刪除？')">
+            刪除
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% else %}
+    <p>目前沒有任何筆記。</p>
+  {% endfor %}
+</div>
 {% endblock %}
