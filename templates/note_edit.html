@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}{{ note and '編輯' or '新增' }}筆記{% endblock %}
+{% block content %}
+<h1>{{ note and '編輯' or '新增' }}筆記</h1>
+<form method="post">
+  <label>標題：
+    <input type="text" name="title" value="{{ note.title if note else '' }}" required>
+  </label>
+  <br>
+  <label>內容（支援 LaTeX）：
+    <textarea id="latex-input" name="content" required>{{ note.content if note else '' }}</textarea>
+  </label>
+  <div id="preview"></div>
+  <button type="submit">儲存</button>
+</form>
+{% endblock %}
+{% block scripts %}
+<script>
+  const input = document.getElementById('latex-input');
+  const preview = document.getElementById('preview');
+  input.addEventListener('input', () => {
+    preview.textContent = input.value;
+    MathJax.typesetPromise([preview]);
+  });
+</script>
+{% endblock %}

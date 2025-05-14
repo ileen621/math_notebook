@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}數學記事本{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  {% block head_extra %}{% endblock %}
+</head>
+<body>
+  <nav>
+    <a href="{{ url_for('index') }}">首頁</a> |
+    <a href="{{ url_for('note_list') }}">筆記列表</a> |
+    <a href="{{ url_for('note_edit') }}">新增筆記</a>
+  </nav>
+  <main>
+    {% with msgs = get_flashed_messages(with_categories=true) %}
+      {% if msgs %}
+        {% for category, message in msgs %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+  <footer>&copy; 2025 數學線上記事本</footer>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

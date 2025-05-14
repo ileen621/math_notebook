@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}首頁 - 數學記事本{% endblock %}
+{% block content %}
+<h1>歡迎使用數學線上記事本</h1>
+<p>這裡可以記錄您的數學公式，並即時預覽。</p>
+<a href="{{ url_for('note_edit') }}">開始新增筆記</a>
+{% endblock %}

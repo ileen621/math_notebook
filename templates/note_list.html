@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}筆記列表 - 數學記事本{% endblock %}
+{% block content %}
+  <h1>所有筆記</h1>
+  <ul>
+    {% for note in notes %}
+      <li>
+        <a href="{{ url_for('note_edit', id=note.id) }}">
+          {{ note.title }}
+        </a>
+      </li>
+    {% else %}
+      <li>目前沒有任何筆記。</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
