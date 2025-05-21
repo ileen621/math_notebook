@@ -1,19 +1,15 @@
-/* static/css/style.css */
-
-/* ===== 全域變數 & 重置 ===== */
+/* ===== 全域設定 & Reset ===== */
 :root {
-  /* 漸層色調 */
-  --gradient-start: #FDD7E4;   /* 豬粉紅 */
-  --gradient-end:   #E38AAE;   /* 凱迪拉克粉紅 */
-  --text-grad-start: #FC6C85;  /* 西瓜粉 */
-  --text-grad-end:   #695CB2;  /* 主選色 */
-
-  --content-max-width:       900px;
-  --carousel-img-max-height: 250px;
-  --bs-secondary:            #6c757d;
-  --bs-success:              #198754;
-  --bs-warning:              #ffc107;
-  --bs-danger:               #dc3545;
+  --gradient-start:   #FDD7E4;
+  --gradient-end:     #E38AAE;
+  --text-grad-start:  #FC6C85;
+  --text-grad-end:    #f4fdff;
+  --bs-secondary:     #e4c965;
+  --bs-success:       #b5f3d6;
+  --bs-warning:       #ffc107;
+  --bs-danger:        #dc3545;
+  --neon-1:           #7057ed;
+  --neon-2:           #e239d1;
 }
 
 * {
@@ -22,200 +18,234 @@
   padding: 0;
 }
 
-/* ===== 網頁整體 ===== */
-body {
-  font-family: "Noto Sans TC", "Helvetica Neue", Arial, sans-serif;
-  background-color: #f8f9fa;
+html, body {
+  margin: 0;
+  padding: 0;
+  padding: 0;
+  font-family: "Noto Sans TC", sans-serif;
   color: #333;
-  line-height: 1.6;
-  padding: 1rem 0;
+  background-color: #f8f9fa;
 }
 
-/* ===== 導覽列 ===== */
-.navbar-brand {
-  font-size: 1.5rem;
-}
-.navbar-nav .nav-link {
+/* ===== 大地色系 橢圓按鈕 ===== */
+.btn-earth {
+  display: inline-block;
+  margin: 0 .25rem;
+  padding: .5rem 1rem;
+  border-radius: 50px;
+  background: linear-gradient(135deg, #A97142, #D2B48C);
+  color: #fff !important;
   font-weight: 500;
-  transition: color 0.2s ease-in-out;
+  text-decoration: none !important;
+  background-size: 200% 200%;
+  transition: background-position .5s ease, transform .2s ease, box-shadow .3s ease;
 }
-.navbar-nav .nav-link:hover {
-  color: var(--text-grad-start);
+.btn-earth:hover,
+.btn-earth:focus {
+  background-position: 100% 0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
-
-/* ===== 首頁橫幅（Hero Banner） ===== */
-.hero-section {
-  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-  color: #fff;
-  padding: 2rem 0;            /* 縮小上下內距 */
+.btn-earth:active {
+  transform: translateY(0);
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.2);
 }
-.hero-section .container {
-  max-width: 60%;             /* 改成 60% 寬度 */
-}
-.hero-section .display-5 {
-  font-size: 3rem;
-  font-weight: 900;
-  background: linear-gradient(45deg, var(--text-grad-start), var(--text-grad-end));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-  margin-bottom: 0.5rem;
-}
-.hero-section .lead {
-  font-size: 1.25rem;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-  margin-bottom: 2rem;
-}
-
-/* ===== 輪播插圖限制 ===== */
-#mathCarousel .carousel-inner {
-  padding: 1rem 0;
-}
-#mathCarousel .carousel-item img {
-  max-height: var(--carousel-img-max-height);
-  width: auto;
-  object-fit: contain;
-  display: block;
-  margin: 0 auto;
-}
-
-/* ===== Flash 訊息 ===== */
-.alert {
-  border-radius: 0.375rem;
-  font-size: 0.95rem;
-  padding: 0.75rem 1rem;
-  margin-bottom: 1rem;
-}
-.alert-success { background-color: #e6ffed; border: 1px solid #b3f0c1; }
-.alert-warning { background-color: #fff5e6; border: 1px solid #ffe5b4; }
-.alert-danger  { background-color: #ffe6e6; border: 1px solid #f5bcbc; }
-
-/* ===== 內容區塊 ===== */
-.content {
-  max-width: var(--content-max-width);
-  margin: 0 auto;
-  padding: 1rem;
-}
-h1, h2, h3 {
-  color: #222;
-  margin-bottom: 1rem;
-}
-
-/* ===== 卡片 & 按鈕 ===== */
-.card {
+.nav-link.btn-earth {
   border: none;
-  border-radius: 0.75rem;
-  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.05);
-}
-.btn {
-  border-radius: 0.75rem;
-  transition: background-color 0.2s ease, transform 0.1s ease;
-}
-.btn-primary {
-  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-  border: none;
-  color: #fff;
-}
-.btn-primary:hover {
-  filter: brightness(0.9);
-  transform: translateY(-1px);
-}
-.btn-secondary {
-  background-color: var(--bs-secondary);
-  border: none;
-  color: #fff;
-}
-.btn-secondary:hover {
-  filter: brightness(0.9);
-  transform: translateY(-1px);
 }
 
-/* ===== 表單元素 ===== */
-.form-control {
-  border-radius: 0.5rem;
-  padding: 0.75rem 1rem;
-  font-family: monospace;
-}
-.form-control:focus {
-  box-shadow: 0 0 0 0.2rem rgba(13,110,253,0.25);
-}
-
-/* ===== 自訂類別: 編輯標題漸層 ===== */
-.edit-heading {
+/* ===== Logo 漸層旋轉 ===== */
+.gradient-logo {
   font-size: 2rem;
-  font-weight: 800;
-  background: linear-gradient(45deg, #9b59b6, #8e44ad);
+  font-weight: bold;
+  background: linear-gradient(60deg,#f44336,#e91e63,#f08724,#3f51b5);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  background-size: 200% 200%;
+  animation: logoGradient 5s linear infinite;
+}
+@keyframes logoGradient {
+  0%,100% { background-position: 0% 50%; }
+  50%     { background-position:100% 50%; }
 }
 
-/* ===== 自訂類別: 可伸縮 textarea 邊框漸層 ===== */
-.textarea-resize {
-  min-height: 20rem;           /* 起始高度 */
-  resize: vertical;            /* 允許垂直縮放 */
-  border: 2px solid transparent;
-  border-image: linear-gradient(to right, #7f8c8d, #bdc3c7) 1;  /* 藍灰漸層 */
+/* ===== Navbar 調整 ===== */
+.navbar-nav {
+  display: flex;
+  align-items: center;
+}
+@media (max-width:576px) {
+  .navbar-nav {
+    flex-direction: column;
+    gap: .5rem;
+  }
+  .navbar-nav .btn-earth {
+    width:100%;
+    text-align:center;
+  }
 }
 
-/* ===== 頁尾 ===== */
-footer {
+/* ===== 自訂按鈕 & 文字斜切效果 ===== */
+.btn-custom {
+  position: relative;
+  display: inline-block;
+  padding: .5rem 1.5rem;
   background: #fff;
-  border-top: 1px solid #e9ecef;
-  padding: 1rem 0;
-  text-align: center;
-  font-size: 0.9rem;
-  color: #666;
+  color: #333;
+  font-weight: 500;
+  border: 2px solid #f90;
+  border-radius: .5rem;
+  overflow: hidden;
+  transition: color .3s ease;
+}
+.btn-custom:active {
+  transform: translateY(1px);
+  transition: transform .1s;
 }
 
-/* ===== 響應式微調 ===== */
-@media (max-width: 576px) {
-  .hero-section .display-5 { font-size: 2rem; }
-  #mathCarousel .carousel-item img { max-height: 180px; }
-}
-/* ===== 其他樣式 … ===== */
-
-/* ===== note_detail 自適應容器 ===== */
-.note-detail-container {
-  max-width: 900px;       /* 最寬 900px，可依需要再放大 */
-  width: 90%;             /* 寬度為視窗 90%，自動縮放 */
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-}
-
-/* ===== 隱藏非首頁的 Hero banner ===== */
-body.detail-page .hero-section {
-  display: none;
-}
-/* ===== note_detail 自適應容器 ===== */
-.note-detail-container {
-  max-width: 900px;   /* 最寬 900px，如需更大可調整 */
-  width: 90%;         /* 寬度為視窗 90%，自動縮放 */
-  margin: 2rem auto;  /* 上下留白，自動置中 */
-}
-
-/* 隱藏首頁才顯示的 hero-section */
-.hero-section.d-none {
-  display: none !important;
-}
-/* 讓所有多列文字框（textarea）可往上下拉伸 */
-textarea.form-control {
-  resize: vertical;     /* 只允許上下拉伸 */
-  min-height: 150px;    /* 給它一個初始高度 */
-}
-
-/* 讓單列 input 框也可水平撐滿容器 */
-input.form-control {
-  width: 100%;
-}
-
-/* 調整按鈕顏色（可選） */
-.btn-primary {
-  background: linear-gradient(135deg, #ffa8a8, #ff6b6b);
-  border: none;
-}
-.btn-secondary {
-  background: linear-gradient(135deg, #ccc, #888);
-  border: none;
+/* ===== Slanted Buttons (前往/開始/搜尋) ===== */
+.btn-slanted {
+  position: relative;
+  display: inline-block;
+  padding: .5rem 1rem;
   color: #fff;
+  text-decoration: none;
+  overflow: hidden;
+  clip-path: polygon(20% 0%,100% 0%,80% 100%,0% 100%);
+  background: linear-gradient(135deg,#FFA500,#FF4500);
+  transition: clip-path .4s ease, background .4s ease;
+}
+.btn-slanted::before {
+  content: attr(data-text);
+  position: relative;
+  z-index: 2;
+  font-weight: 500;
+}
+.btn-slanted:hover {
+  clip-path: polygon(0% 0%,80% 0%,100% 100%,20% 100%);
+  background: linear-gradient(135deg,#1e87ff,#00BFFF);
+}
+
+/* ===== 搜尋按鈕漸層 + 上浮 ===== */
+.btn-search {
+  background: linear-gradient(60deg,#1E90FF,#00BFFF) !important;
+  background-size: 200% 200% !important;
+  color: #fff !important;
+  border: none !important;
+  transition: background-position .6s ease, transform .2s ease !important;
+  z-index: 2;
+}
+.btn-search:hover {
+  background-position: 100% 0 !important;
+  transform: translateY(-2px) !important;
+}
+
+/* ===== 檢視/編輯/刪除：漸層旋轉 + 光暈 + 動態下劃線 ===== */
+.btn-rotate-gradient {
+  position: relative !important;
+  display: inline-block !important;
+  padding: .25rem .5rem !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: .25rem !important;
+  background: linear-gradient(60deg,#ec9c96,#414796b9,#ef3060,#e8ed89) !important;
+  background-size: 200% 200% !important;
+  transition: background-position .5s ease, box-shadow .3s ease !important;
+  overflow: hidden !important;
+  z-index: 1 !important;
+}
+.btn-rotate-gradient:hover {
+  animation: rotateGradient 3s linear infinite !important,
+             glow         1.5s ease-in-out infinite alternate !important;
+  box-shadow: 0 0 8px rgba(255,255,255,0.6),
+              0 0 16px rgba(255,255,255,0.4) !important;
+}
+.btn-rotate-gradient::after {
+  content: '' !important;
+  position: absolute !important;
+  bottom: -2px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: currentColor !important;
+  transition: width .3s ease, left .3s ease !important;
+}
+.btn-rotate-gradient:hover::after {
+  width: 100% !important;
+  left: 0 !important;
+}
+@keyframes rotateGradient {
+  0%,100% { background-position: 0% 50%; }
+  50%     { background-position:100% 50%; }
+}
+@keyframes glow {
+  from { box-shadow: 0 0 4px rgba(255,255,255,0.4); }
+  to   { box-shadow: 0 0 12px rgba(255,255,255,0.8); }
+}
+
+/* ===== 跳動標題（左右漂移） ===== */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+.note-list-title {
+  position: absolute;
+  top: 1rem;
+  left: 40%;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2.5rem;
+  background: linear-gradient(45deg,#FFD700,#9370DB);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: floatLR 4s ease-in-out infinite alternate;
+  z-index: 2;
+}
+@keyframes floatLR {
+  from { left: 30%; }
+  to   { left: 50%; }
+}
+
+/* ===== 全頁滿版背景 & 主內容面板 ===== */
+body.bg-light {
+  background: url('../images/full_cosmic_bg.png') center center / cover fixed no-repeat !important;
+}
+.note-list-panel {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 2rem 1rem;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+.note-list-panel,
+.note-detail-container,
+.main-panel {
+  background-color: #fff !important;
+}
+/* —— fun headings for “新增筆記” (edit-heading) & “手繪／塗鴉” (section-heading) —— */
+/* 先在最上方確保已經匯入 Bangers 字體 */
+@import url('https://fonts.googleapis.com/css2?family=Bangers&display=swap');
+
+.edit-heading,
+.section-heading {
+  font-family: 'Bangers', cursive;
+  font-size: 2rem;                    /* 看需求再微調 */
+  background: linear-gradient(90deg, #FF7E5F, #FEB47B, #d7693e, #91EAE4);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  /* 文字描邊 (Chrome/Edge 支援) */
+  -webkit-text-stroke: 1px rgba(243, 89, 204, 0.2);
+  /* 加個陰影增深立體感 */
+  text-shadow: 2px 2px 4px rgba(208, 34, 92, 0.25);
+  /* 漸層緩慢移動 */
+  animation: gradientMove 5s ease infinite, floatText 1.5s ease-in-out infinite alternate;
+  display: inline-block;              /* 讓 translateY 生效 */
+}
+
+/* 漸層移動效果 */
+@keyframes gradientMove {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+/* 上下跳動效果 */
+@keyframes floatText {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-6px); }
 }

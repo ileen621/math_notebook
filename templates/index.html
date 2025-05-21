@@ -1,44 +1,180 @@
+{# templates/index.html #}
 {% extends 'base.html' %}
 
 {% block title %}首頁 | 數學線上記事本{% endblock %}
 
+{% block head_extra %}
+  {{ super() }}
+  <!-- Playfair Display 字体 -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    /* —— 英雄区 —— */
+    .index-hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      width: 100vw; height: 70vh; min-height: 500px;
+      margin: 0; padding: 0;
+      overflow: hidden; position: relative;
+    }
+    .index-hero .tile {
+      background-size: cover;
+      background-position: center;
+    }
+    .index-hero .hero-overlay {
+      position: absolute; inset: 0;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          rgba(255,255,255,0.15),
+          rgba(255,255,255,0.15) 12px,
+          transparent 12px,
+          transparent 24px
+        );
+      z-index: 1;
+      pointer-events: none;
+    }
+    .hero-text-left, .hero-text-right {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      z-index: 2; text-align: center; pointer-events: none;
+    }
+    .hero-text-left {
+      left: 30%;
+      animation: slideInLeft 1s ease-out forwards 0.5s,
+                 convergeLeft 1s ease-in-out forwards 2s;
+    }
+    .hero-text-right {
+      right: 30%; transform: translate(50%,-50%);
+      animation: slideInRight 1s ease-out forwards 0.5s,
+                 convergeRight 1s ease-in-out forwards 2s;
+    }
+    .hero-text-left h1, .hero-text-right h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem; color: #fff;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.6),
+                   -2px -2px 8px rgba(255,255,255,0.7);
+      margin: 0;
+    }
+    .hero-text-left p, .hero-text-right p {
+      margin: .5rem 0 0; font-size: 1.5rem; color: #fff;
+    }
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-100%) translateY(-50%); }
+      to   { opacity: 1; transform: translateX(-50%) translateY(-50%); }
+    }
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(100%) translateY(-50%); }
+      to   { opacity: 1; transform: translateX(50%) translateY(-50%); }
+    }
+    @keyframes convergeLeft  { from { left: 30%; } to { left: 35%; } }
+    @keyframes convergeRight { from { right:30%; } to { right:35%; } }
+
+    /* —— 功能卡片 & 容器背景 —— */
+    .feature-cards {
+      position: relative;    /* 为 .bottom-bg 提供定位上下文 */
+      top: -4rem;            /* 向上顶出，与英雄区呼应 */
+      z-index: 5;
+      margin-bottom: 4rem;   /* 给底部背景留空间 */
+    }
+    .feature-cards .card {
+      position: relative;
+      z-index: 10;           /* 卡片永远在背景之上 */
+    }
+
+    /* —— 下半部黑板背景 —— */
+    .bottom-bg {
+      position: absolute;
+      left: 0; right: 0;
+      /* 从容器顶部往下 50px，伸入卡片内部一点 */
+      top: 50px;
+      /* 足够高以覆盖所有下方空白 */
+      height: calc(100% + 50px);
+      background:
+        url('{{ url_for("static", filename="images/blackboard.jpg") }}')
+        center/cover no-repeat;
+      opacity: 0.7;
+      animation: fadePulse 8s ease-in-out infinite alternate;
+      z-index: 1;
+    }
+    @keyframes fadePulse {
+      from { opacity: 0.65; }
+      to   { opacity: 0.8; }
+    }
+  </style>
+{% endblock %}
+
+{% block hero %}
+  <div class="index-hero">
+    <div class="tile"
+         style="background-image: url('{{ url_for('static', filename='images/living1.png') }}')"></div>
+    <div class="tile"
+         style="background-image: url('{{ url_for('static', filename='images/living2.png') }}')"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-text-left">
+      <h1>{{ hero_title or '找尋你的數學靈感' }}</h1>
+      <p>{{ hero_subtitle or '在這裡捕捉每一次思維的閃光' }}</p>
+    </div>
+    <div class="hero-text-right">
+      <h1>探索宇宙的語言</h1>
+      <p>在公式中尋找美的律動</p>
+    </div>
+  </div>
+{% endblock %}
+
 {% block content %}
-<div class="row text-center">
-  <div class="col-md-4 mb-4">
-    <div class="card h-100 shadow-sm">
-      <div class="card-body">
-        <h5 class="card-title">📄 筆記列表</h5>
-        <p class="card-text">瀏覽、管理你所有的筆記</p>
-        <a href="{{ url_for('note_list') }}" class="btn btn-outline-primary">前往</a>
+  <div class="container feature-cards">
+    <div class="row text-center gy-4">
+      <!-- 筆記列表 -->
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">📄 筆記列表</h5>
+            <p class="card-text">前往瀏覽、管理你所有的筆記</p>
+            <a href="{{ url_for('note_list') }}"
+               class="btn-slanted mt-auto"
+               data-text="前往"></a>
+
+            </a>
+          </div>
+        </div>
+      </div>
+      <!-- 新增筆記 -->
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">✏️ 新增筆記</h5>
+            <p class="card-text">記錄新的數學靈感與公式</p>
+            <a href="{{ url_for('note_edit') }}"
+               class="btn-slanted mt-auto"
+               data-text="開始"></a>
+
+            </a>
+          </div>
+        </div>
+      </div>
+      <!-- 搜尋筆記 -->
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">🔍 搜尋筆記</h5>
+            <p class="card-text">快速找到特定關鍵詞</p>
+            <form method="get" action="{{ url_for('note_list') }}" class="d-flex mt-auto">
+              <input type="search" name="q"
+                     class="form-control me-2"
+                     placeholder="輸入關鍵字…">
+             <button type="submit"
+             class="btn-slanted mt-auto"
+             data-text="搜尋"></button>
+
+            </form>
+          </div>
+        </div>
       </div>
     </div>
+
+    
+    <div class="bottom-bg"></div>
   </div>
-  <div class="col-md-4 mb-4">
-    <div class="card h-100 shadow-sm">
-      <div class="card-body">
-        <h5 class="card-title">✏️ 新增筆記</h5>
-        <p class="card-text">記錄新的數學靈感與公式</p>
-        <a href="{{ url_for('note_edit') }}" class="btn btn-outline-primary">開始</a>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-4 mb-4">
-    <div class="card h-100 shadow-sm">
-      <div class="card-body">
-        <h5 class="card-title">🔍 搜尋筆記</h5>
-        <p class="card-text">快速找到特定關鍵詞</p>
-        <form method="get" action="{{ url_for('note_list') }}" class="d-flex">
-          <input
-            type="search"
-            name="q"
-            class="form-control me-2"
-            placeholder="輸入關鍵字…"
-            value=""
-          >
-          <button class="btn btn-outline-primary" type="submit">搜尋</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
 {% endblock %}

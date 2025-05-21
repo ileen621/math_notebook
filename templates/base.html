@@ -20,78 +20,45 @@
     crossorigin="anonymous"
   />
 
-  <!-- Custom CSS -->
+  <!-- 全局樣式 -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
-
-  <!-- MathJax for LaTeX -->
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
   {% block head_extra %}{% endblock %}
 </head>
-<body class="bg-light" style="font-family:'Noto Sans TC', sans-serif;">
+<body class="bg-light index-page">
 
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4">
     <div class="container">
-      <a class="navbar-brand fw-bold" href="{{ url_for('index') }}">📒 數學記事本</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <!-- Logo 漸層旋轉 -->
+      <a class="navbar-brand gradient-logo" href="{{ url_for('index') }}">
+        📒 數學記事本
+      </a>
+      <button class="navbar-toggler" type="button"
+              data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
+
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">首頁</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('note_list') }}">筆記列表</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('note_edit') }}">新增筆記</a></li>
+        <ul class="navbar-nav ms-auto gap-2">
+          <li class="nav-item">
+            <a class="btn-earth nav-link" href="{{ url_for('index') }}">首頁</a>
+          </li>
+          <li class="nav-item">
+            <a class="btn-earth nav-link" href="{{ url_for('note_list') }}">筆記列表</a>
+          </li>
+          <li class="nav-item">
+            <a class="btn-earth nav-link" href="{{ url_for('note_edit') }}">新增筆記</a>
+          </li>
         </ul>
       </div>
     </div>
   </nav>
 
-  <!-- Hero + Carousel -->
-  <section class="hero-section">
-    <div class="container text-white text-center">
-      <h1 class="display-5 fw-bold mb-3">數學線上記事本</h1>
-      <p class="lead gradient-text fw-bold">
-        隨時記錄你的數學靈感、學習筆記與公式推導
-      </p>
-
-      <div id="mathCarousel" class="carousel slide mx-auto w-75" data-bs-ride="carousel" data-bs-interval="3000">
-        <div class="carousel-inner">
-          {% for i in range(1,5) %}
-          <div class="carousel-item {% if i==1 %}active{% endif %}">
-            <img
-              src="{{ url_for('static', filename='images/math' ~ i ~ '.png') }}"
-              class="d-block mx-auto"
-              alt="Math {{ i }}"
-            >
-          </div>
-          {% endfor %}
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#mathCarousel" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon"></span>
-          <span class="visually-hidden">上一張</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#mathCarousel" data-bs-slide="next">
-          <span class="carousel-control-next-icon"></span>
-          <span class="visually-hidden">下一張</span>
-        </button>
-      </div>
-    </div>
-  </section>
+  <!-- Hero -->
+  {% block hero %}{% endblock %}
 
   <!-- Main Content -->
   <main class="container mb-5">
-    {% with msgs = get_flashed_messages(with_categories=true) %}
-      {% if msgs %}
-        {% for category, message in msgs %}
-          <div class="alert alert-{{ 'success' if category=='success' else 'warning' if category=='warning' else 'danger' }} alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
-
     {% block content %}{% endblock %}
   </main>
 
@@ -100,12 +67,11 @@
     <div class="container">&copy; 2025 數學線上記事本</div>
   </footer>
 
-  <!-- Bootstrap Bundle JS (with Popper) -->
+  <!-- Bootstrap Bundle JS -->
   <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
     crossorigin="anonymous"
   ></script>
-
   {% block scripts %}{% endblock %}
 </body>
 </html>
