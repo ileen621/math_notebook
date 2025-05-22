@@ -187,15 +187,15 @@ html, body {
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
 .note-list-title {
   position: absolute;
-  top: 1rem;
-  left: 40%;
+  top: 0.1rem;
+  left: 35%;
   font-family: 'Orbitron', sans-serif;
-  font-size: 2.5rem;
-  background: linear-gradient(45deg,#FFD700,#9370DB);
+  font-size: 2rem;
+  background: linear-gradient(45deg,#cc5287,#2b0a79);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: floatLR 4s ease-in-out infinite alternate;
-  z-index: 2;
+  z-index: 1;
 }
 @keyframes floatLR {
   from { left: 30%; }
@@ -238,14 +238,41 @@ body.bg-light {
   display: inline-block;              /* 讓 translateY 生效 */
 }
 
-/* 漸層移動效果 */
-@keyframes gradientMove {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+
+
+/* 搜尋按鈕：加上折射光暈 */
+.btn-search {
+  background: linear-gradient(60deg, #1E90FF, #00BFFF);
+  color: #fff !important;
+  border: none;
+  box-shadow: 0 0 6px rgba(30,144,255,0.6);
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
 }
-/* 上下跳動效果 */
-@keyframes floatText {
-  from { transform: translateY(0); }
-  to   { transform: translateY(-6px); }
+.btn-search:hover {
+  box-shadow: 0 0 16px rgba(30,144,255,0.8),
+              0 0 24px rgba(30,144,255,0.6);
+  transform: translateY(-2px);
+}
+/* 放在 style.css 最底部，確保不被其他規則覆蓋 */
+
+/* 1. 頁首 / 筆記列表 / 新增筆記（深咖啡色光暈） */
+.navbar .btn-earth,
+.note-list-panel .btn-earth {
+  position: relative;
+  z-index: 1;
+  /* 主體顏色 */
+  background-color: #1c0338ab !important; 
+  border-color: #8b6b4a !important;
+  transition: box-shadow .3s ease, transform .2s ease;
+}
+.navbar .btn-earth:hover,
+.note-list-panel .btn-earth:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 8px rgba(32, 33, 23, 0.6),
+              0 0 16px rgba(139, 107, 74, .4);
+}
+
+/* 直接把 .note-list-title 的動畫關掉 */
+.note-list-title {
+  animation: none !important;
 }

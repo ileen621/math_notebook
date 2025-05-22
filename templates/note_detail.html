@@ -1,114 +1,36 @@
-{# templates/note_list.html #}
+{# templates/note_detail.html #}
 {% extends 'base.html' %}
-{% block title %}📄 筆記列表 | 數學記事本{% endblock %}
+{% block title %}🔍 檢視筆記 | 數學記事本{% endblock %}
 
 {% block content %}
 <div class="cosmic-list">
-  <div class="container my-4 note-list-panel">
-    <!-- 跳動標題 -->
-    <h2 class="note-list-title">📄 筆記列表</h2>
+  <div class="container my-4 note-list-panel position-relative">
 
-    <!-- 搜尋區 -->
-    <div class="search-container d-flex justify-content-between align-items-center p-3 mb-3">
-      <form class="d-flex flex-grow-1 me-2"
-            method="get"
-            action="{{ url_for('note_list') }}">
-        <input name="q"
-               class="form-control"
-               placeholder="搜尋筆記"
-               value="{{ q }}">
-      </form>
-      <button class="btn-search btn">搜尋</button>
+    <!-- 你的標題，貼在 content 裡最前面 -->
+    <h2 class="note-detail-title text-center mb-4">
+      {{ note.title }}
+    </h2>
+
+    <!-- 分類 -->
+    <p class="text-muted text-center mb-4">
+      分類：{{ note.category }}
+    </p>
+
+    <!-- 筆記內容 -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        {{ note.content | safe }}
+      </div>
     </div>
 
-    {% if q_history %}
-      <div class="mb-4">
-        <small>最近搜尋：
-          {% for term in q_history %}
-            <a href="{{ url_for('note_list', q=term) }}"
-               class="badge bg-secondary text-decoration-none me-1">
-              {{ term }}
-            </a>
-          {% endfor %}
-        </small>
-      </div>
-    {% endif %}
-
-    <!-- 筆記列表卡片 -->
-    <div class="row mt-4">
-      {% for note in notes %}
-        <div class="col-md-6 mb-4">
-          <div class="card h-100 shadow-sm">
-            <div class="card-body d-flex flex-column">
-              <h5 class="card-title">{{ note.title }}</h5>
-              <p class="text-muted small mb-2">{{ note.category }}</p>
-              <p class="card-text text-truncate">{{ note.content|striptags }}</p>
-              <div class="mt-auto">
-                <a href="{{ url_for('note_detail', id=note.id) }}"
-                   class="btn-rotate-gradient btn-sm me-1">檢視</a>
-                <a href="{{ url_for('note_edit',   id=note.id) }}"
-                   class="btn-rotate-gradient btn-sm me-1">編輯</a>
-                <button class="btn-rotate-gradient btn-sm"
-                        data-bs-toggle="modal"
-                        data-bs-target="#confirmDeleteModal"
-                        data-note-id="{{ note.id }}"
-                        data-note-title="{{ note.title }}">
-                  刪除
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      {% endfor %}
+    <!-- 回列表按鈕 -->
+    <div class="text-center mb-5">
+      <a href="{{ url_for('note_list') }}"
+         class="btn-earth">
+        ← 回到筆記列表
+      </a>
     </div>
 
-    {% if total_pages > 1 %}
-      <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center">
-          {% for p in range(1, total_pages+1) %}
-            <li class="page-item {% if p==page %}active{% endif %}">
-              <a class="page-link"
-                 href="{{ url_for('note_list', q=q, page=p) }}">{{ p }}</a>
-            </li>
-          {% endfor %}
-        </ul>
-      </nav>
-    {% endif %}
   </div>
 </div>
-
-<!-- 刪除確認 Modal -->
-<div class="modal fade" id="confirmDeleteModal" tabindex="-1">
-  <div class="modal-dialog">
-    <form method="post" id="deleteForm">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">確認刪除</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          <p>確定要刪除「<strong id="deleteNoteTitle"></strong>」嗎？</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-          <button type="submit" class="btn btn-danger">刪除</button>
-        </div>
-      </div>
-    </form>
-  </div>
-</div>
-{% endblock %}
-
-{% block scripts %}
-  {{ super() }}
-  <script>
-    document.getElementById('confirmDeleteModal')
-      .addEventListener('show.bs.modal', function(e) {
-        const btn       = e.relatedTarget;
-        const noteId    = btn.getAttribute('data-note-id');
-        const noteTitle = btn.getAttribute('data-note-title');
-        document.getElementById('deleteNoteTitle').textContent = noteTitle;
-        document.getElementById('deleteForm').action = '/note/delete/' + noteId;
-      });
-  </script>
 {% endblock %}
