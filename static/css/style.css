@@ -1,278 +1,281 @@
-/* ===== 全域設定 & Reset ===== */
+/* Reset & Base */
 :root {
-  --gradient-start:   #FDD7E4;
-  --gradient-end:     #E38AAE;
-  --text-grad-start:  #FC6C85;
-  --text-grad-end:    #f4fdff;
-  --bs-secondary:     #e4c965;
-  --bs-success:       #b5f3d6;
-  --bs-warning:       #ffc107;
-  --bs-danger:        #dc3545;
-  --neon-1:           #7057ed;
-  --neon-2:           #e239d1;
+  --font-base: "Noto Sans TC", sans-serif;
+  --color-bg: #f8f9fa;
+  --transition-fast: .2s ease;
 }
-
-* {
+*, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
-
 html, body {
-  margin: 0;
-  padding: 0;
-  padding: 0;
-  font-family: "Noto Sans TC", sans-serif;
-  color: #333;
-  background-color: #f8f9fa;
+  height: 100%;
+  font-family: var(--font-base);
+  background: var(--color-bg);
+  overflow-x: hidden;
 }
 
-/* ===== 大地色系 橢圓按鈕 ===== */
-.btn-earth {
-  display: inline-block;
-  margin: 0 .25rem;
-  padding: .5rem 1rem;
-  border-radius: 50px;
-  background: linear-gradient(135deg, #A97142, #D2B48C);
-  color: #fff !important;
-  font-weight: 500;
-  text-decoration: none !important;
-  background-size: 200% 200%;
-  transition: background-position .5s ease, transform .2s ease, box-shadow .3s ease;
+/* Navbar（首頁專屬） */
+nav.site-navbar {
+  background-color: #2f2f2f !important;
 }
-.btn-earth:hover,
-.btn-earth:focus {
-  background-position: 100% 0;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-.btn-earth:active {
-  transform: translateY(0);
-  box-shadow: inset 0 2px 6px rgba(0,0,0,0.2);
-}
-.nav-link.btn-earth {
-  border: none;
+nav.site-navbar .nav-link::after {
+  display: none !important;
 }
 
-/* ===== Logo 漸層旋轉 ===== */
-.gradient-logo {
-  font-size: 2rem;
-  font-weight: bold;
-  background: linear-gradient(60deg,#f44336,#e91e63,#f08724,#3f51b5);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-size: 200% 200%;
-  animation: logoGradient 5s linear infinite;
-}
-@keyframes logoGradient {
-  0%,100% { background-position: 0% 50%; }
-  50%     { background-position:100% 50%; }
-}
-
-/* ===== Navbar 調整 ===== */
-.navbar-nav {
-  display: flex;
-  align-items: center;
-}
-@media (max-width:576px) {
-  .navbar-nav {
-    flex-direction: column;
-    gap: .5rem;
-  }
-  .navbar-nav .btn-earth {
-    width:100%;
-    text-align:center;
-  }
-}
-
-/* ===== 自訂按鈕 & 文字斜切效果 ===== */
-.btn-custom {
+/* Hero 區塊 */
+.index-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 70vh;
+  min-height: 400px;
   position: relative;
-  display: inline-block;
-  padding: .5rem 1.5rem;
-  background: #fff;
-  color: #333;
-  font-weight: 500;
-  border: 2px solid #f90;
-  border-radius: .5rem;
   overflow: hidden;
-  transition: color .3s ease;
+  z-index: 1;
 }
-.btn-custom:active {
-  transform: translateY(1px);
-  transition: transform .1s;
+.index-hero .tile {
+  background-size: cover;
+  background-position: center;
+}
+.index-hero .hero-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,0.15) 0,
+      rgba(255,255,255,0.15) 12px,
+      transparent 12px,
+      transparent 24px
+    );
+  z-index: 2;
+  pointer-events: none;
+}
+.hero-text-left, .hero-text-right {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  text-align: center;
+  pointer-events: none;
+}
+.hero-text-left {
+  left: 35%;
+  animation: slideInLeft 1s ease-out forwards 0.5s,
+             convergeLeft 1s ease-in-out forwards 2s;
+}
+.hero-text-right {
+  right: 35%;
+  transform: translate(50%, -50%);
+  animation: slideInRight 1s ease-out forwards 0.5s,
+             convergeRight 1s ease-in-out forwards 2s;
+}
+.hero-text-left h1, .hero-text-right h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem;
+  color: #fff;
+  text-shadow: 2px 2px 8px rgba(0,0,0,0.6),
+               -2px -2px 8px rgba(255,255,255,0.7);
+  margin: 0;
+}
+.hero-text-left p, .hero-text-right p {
+  margin: .5rem 0 0;
+  font-size: 1.5rem;
+  color: #fff;
 }
 
-/* ===== Slanted Buttons (前往/開始/搜尋) ===== */
-.btn-slanted {
+@keyframes slideInLeft {
+  from { opacity:0; transform: translateX(-100%) translateY(-50%); }
+  to   { opacity:1; transform: translateX(-50%) translateY(-50%); }
+}
+@keyframes slideInRight {
+  from { opacity:0; transform: translateX(100%) translateY(-50%); }
+  to   { opacity:1; transform: translateX(50%) translateY(-50%); }
+}
+@keyframes convergeLeft  { from { left:30%; } to { left:35%; } }
+@keyframes convergeRight { from { right:30%; } to { right:35%; } }
+
+/* 功能卡片 */
+.feature-cards-wrapper {
+  position: relative;
+  left: 50%; margin-left: -50vw;
+  width: 100vw;
+  margin-top: -8rem; padding-top: 8rem;
+  background: linear-gradient(
+    135deg,
+    rgba(245,232,208,0.9) 20%,
+    rgba(234,212,184,0.9) 40%,
+    rgba(245,232,208,0.9) 60%,
+    rgba(234,212,184,0.9) 80%
+  );
+  z-index: 1;
+}
+.feature-cards {
+  display: flex;
+  gap: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  align-items: stretch;
+  position: relative;
+  top: -8rem;
+  z-index: 2;
+}
+.feature-cards .card {
+  flex: 1;
+  background: #fff;
+  border: none;
+  border-radius: .5rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  transition: transform .2s ease, box-shadow .2s ease;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: liftUp 0.6s ease-out forwards;
+}
+.feature-cards .card:hover {
+  transform: translateY(-.5rem);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+@keyframes liftUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+.feature-cards .card-title { font-size: 1.25rem; margin-bottom: .5rem; }
+.feature-cards .card-text  { color: #555; margin-bottom: 1rem; }
+
+/* CTA 動畫 */
+.cta {
   position: relative;
   display: inline-block;
-  padding: .5rem 1rem;
-  color: #fff;
+  padding: 16px 24px;
+  background: transparent;
+  color: #111;
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: .25em;
+  text-transform: uppercase;
   text-decoration: none;
   overflow: hidden;
-  clip-path: polygon(20% 0%,100% 0%,80% 100%,0% 100%);
-  background: linear-gradient(135deg,#FFA500,#FF4500);
-  transition: clip-path .4s ease, background .4s ease;
+  transition: all .2s ease;
 }
-.btn-slanted::before {
-  content: attr(data-text);
+.cta span { position: relative; z-index: 2; line-height: 18px; }
+.cta svg {
+  position: relative; z-index: 2; margin-left: 10px;
+  fill: none; stroke: #111; stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+  width: 13px; height: 10px;
+  transform: translateX(-5px); transition: all .3s;
+}
+.cta::before {
+  content: '';
+  position: absolute; top: 0; left: 0;
+  width: 56px; height: 56px;
+  background: rgba(255,171,157,0.5);
+  border-radius: 28px;
+  transition: all .3s ease;
+  z-index: 1;
+}
+.cta:hover::before { width: 100%; background: rgba(255,171,157,1); }
+.cta:hover svg       { transform: translateX(0); stroke: #fff; }
+.cta:hover span      { color: #fff; }
+.cta:active          { transform: scale(.96); }
+
+.cta-small {
+  padding: 12px 20px;
+}
+.cta-small::before {
+  width: 44px; height: 44px;
+  border-radius: 22px;
+  top: 50%; transform: translateY(-50%);
+}
+.cta-small svg {
+  width: 10px; height: 8px;
+  margin-left: 6px;
+}
+.cta-small span {
+  font-size: 14px;
+  letter-spacing: .2em;
+}
+
+.feature-cards input[type="search"] {
+  flex: 1;
+  padding: 0 .75rem;
+  height: 3rem;
+  border: 2px solid goldenrod;
+  border-radius: .25rem 0 0 .25rem;
+}
+.feature-cards button[type="submit"].cta-small {
+  border-radius: 0 .25rem .25rem 0;
+}
+
+/* Hero  */
+.notes-hero {
   position: relative;
-  z-index: 2;
-  font-weight: 500;
-}
-.btn-slanted:hover {
-  clip-path: polygon(0% 0%,80% 0%,100% 100%,20% 100%);
-  background: linear-gradient(135deg,#1e87ff,#00BFFF);
-}
-
-/* ===== 搜尋按鈕漸層 + 上浮 ===== */
-.btn-search {
-  background: linear-gradient(60deg,#1E90FF,#00BFFF) !important;
-  background-size: 200% 200% !important;
-  color: #fff !important;
-  border: none !important;
-  transition: background-position .6s ease, transform .2s ease !important;
+  background: linear-gradient(180deg, #8FD7F2, #7EC8E3);
+  height: 180px;
+  border-radius: 0 0 .5rem .5rem;
+  display: flex;
+  align-items: flex-start;    /* 靠上 */
+  justify-content: center;
+  padding-top: 1.5rem;
+  color: #fff;
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-shadow: 3px 3px 0 rgba(0,0,0,0.2);
+  overflow: hidden;
   z-index: 2;
 }
-.btn-search:hover {
-  background-position: 100% 0 !important;
-  transform: translateY(-2px) !important;
-}
-
-/* ===== 檢視/編輯/刪除：漸層旋轉 + 光暈 + 動態下劃線 ===== */
-.btn-rotate-gradient {
-  position: relative !important;
-  display: inline-block !important;
-  padding: .25rem .5rem !important;
-  color: #fff !important;
-  border: none !important;
-  border-radius: .25rem !important;
-  background: linear-gradient(60deg,#ec9c96,#414796b9,#ef3060,#e8ed89) !important;
-  background-size: 200% 200% !important;
-  transition: background-position .5s ease, box-shadow .3s ease !important;
-  overflow: hidden !important;
-  z-index: 1 !important;
-}
-.btn-rotate-gradient:hover {
-  animation: rotateGradient 3s linear infinite !important,
-             glow         1.5s ease-in-out infinite alternate !important;
-  box-shadow: 0 0 8px rgba(255,255,255,0.6),
-              0 0 16px rgba(255,255,255,0.4) !important;
-}
-.btn-rotate-gradient::after {
-  content: '' !important;
-  position: absolute !important;
-  bottom: -2px;
-  left: 50%;
-  width: 0;
-  height: 2px;
-  background: currentColor !important;
-  transition: width .3s ease, left .3s ease !important;
-}
-.btn-rotate-gradient:hover::after {
-  width: 100% !important;
-  left: 0 !important;
-}
-@keyframes rotateGradient {
-  0%,100% { background-position: 0% 50%; }
-  50%     { background-position:100% 50%; }
-}
-@keyframes glow {
-  from { box-shadow: 0 0 4px rgba(255,255,255,0.4); }
-  to   { box-shadow: 0 0 12px rgba(255,255,255,0.8); }
-}
-
-/* ===== 跳動標題（左右漂移） ===== */
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
-.note-list-title {
+.notes-hero::before {
+  content: "";
   position: absolute;
-  top: 0.1rem;
-  left: 35%;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 2rem;
-  background: linear-gradient(45deg,#cc5287,#2b0a79);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: floatLR 4s ease-in-out infinite alternate;
-  z-index: 1;
+  top: 20px; left: 10%;
+  width: 150px; height: 80px;
+  background: url("../images/cloud1.png") no-repeat center/contain;
+  opacity: .6;
+  animation: floatCloud 20s linear infinite;
 }
-@keyframes floatLR {
-  from { left: 30%; }
-  to   { left: 50%; }
-}
-
-/* ===== 全頁滿版背景 & 主內容面板 ===== */
-body.bg-light {
-  background: url('../images/full_cosmic_bg.png') center center / cover fixed no-repeat !important;
-}
-.note-list-panel {
-  max-width: 900px;
-  margin: 2rem auto;
-  padding: 2rem 1rem;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-}
-.note-list-panel,
-.note-detail-container,
-.main-panel {
-  background-color: #fff !important;
-}
-/* —— fun headings for “新增筆記” (edit-heading) & “手繪／塗鴉” (section-heading) —— */
-/* 先在最上方確保已經匯入 Bangers 字體 */
-@import url('https://fonts.googleapis.com/css2?family=Bangers&display=swap');
-
-.edit-heading,
-.section-heading {
-  font-family: 'Bangers', cursive;
-  font-size: 2rem;                    /* 看需求再微調 */
-  background: linear-gradient(90deg, #FF7E5F, #FEB47B, #d7693e, #91EAE4);
-  background-size: 200% 200%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  /* 文字描邊 (Chrome/Edge 支援) */
-  -webkit-text-stroke: 1px rgba(243, 89, 204, 0.2);
-  /* 加個陰影增深立體感 */
-  text-shadow: 2px 2px 4px rgba(208, 34, 92, 0.25);
-  /* 漸層緩慢移動 */
-  animation: gradientMove 5s ease infinite, floatText 1.5s ease-in-out infinite alternate;
-  display: inline-block;              /* 讓 translateY 生效 */
+.notes-hero::after {
+  content: "";
+  position: absolute;
+  bottom: 10px; right: 15%;
+  width: 120px; height: 60px;
+  background: url("../images/cloud2.png") no-repeat center/contain;
+  opacity: .5;
+  animation: floatCloud 25s linear infinite reverse;
 }
 
-
-
-/* 搜尋按鈕：加上折射光暈 */
-.btn-search {
-  background: linear-gradient(60deg, #1E90FF, #00BFFF);
-  color: #fff !important;
-  border: none;
-  box-shadow: 0 0 6px rgba(30,144,255,0.6);
-  transition: box-shadow 0.3s ease, transform 0.2s ease;
-}
-.btn-search:hover {
-  box-shadow: 0 0 16px rgba(30,144,255,0.8),
-              0 0 24px rgba(30,144,255,0.6);
-  transform: translateY(-2px);
-}
-/* 放在 style.css 最底部，確保不被其他規則覆蓋 */
-
-/* 1. 頁首 / 筆記列表 / 新增筆記（深咖啡色光暈） */
-.navbar .btn-earth,
-.note-list-panel .btn-earth {
+/* 卡片面板往上推 */
+.container.note-list-panel {
   position: relative;
   z-index: 1;
-  /* 主體顏色 */
-  background-color: #1c0338ab !important; 
-  border-color: #8b6b4a !important;
-  transition: box-shadow .3s ease, transform .2s ease;
-}
-.navbar .btn-earth:hover,
-.note-list-panel .btn-earth:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0 8px rgba(32, 33, 23, 0.6),
-              0 0 16px rgba(139, 107, 74, .4);
+  margin-top: -100px;
+  padding-top: 100px;
 }
 
-/* 直接把 .note-list-title 的動畫關掉 */
-.note-list-title {
-  animation: none !important;
+
+
+@keyframes slideIn {
+  from { transform: translateX(100%) scale(.8); opacity: 0; }
+  to   { transform: translateX(0) scale(1); opacity: 1; }
+}
+.toast {
+  animation: slideIn 0.3s ease-out;
+}
+
+/* 搜尋按鈕 */
+.btn-search {
+  border-radius: 2rem;
+  padding: .5rem 1.25rem;
+  background: #046EAB;
+  color: #fff;
+  transition: var(--transition-fast);
+}
+.btn-search:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+}
+.btn-search:active {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
 }

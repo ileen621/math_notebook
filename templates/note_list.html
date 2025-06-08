@@ -1,60 +1,199 @@
-{# templates/note_list.html #}
 {% extends 'base.html' %}
+
 {% block title %}📄 筆記列表 | 數學記事本{% endblock %}
 
+{% block head_extra %}
+  {{ super() }}
+  <style>
+  
+    html, body {
+      min-height: 100%;
+      background: #7EC8E3;
+    }
+   
+    .notes-hero {
+      position: relative;
+      background: linear-gradient(180deg, #8FD7F2 0%, #7EC8E3 100%);
+      height: 200px;
+      border-radius: 0 0 .5rem .5rem;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 1.5rem;
+      color: #fff;
+      font-size: 2.5rem;
+      font-weight: bold;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      overflow: hidden;
+      z-index: 2;
+    }
+    .notes-hero::before {
+      content: "";
+      position: absolute;
+      top: -40px; left: 50%;
+      transform: translateX(-50%);
+      width: 160px; height: 160px;
+      background: url('{{ url_for("static", filename="images/zero_white.png") }}') no-repeat center/contain;
+      opacity: .3;
+    }
+    .notes-hero::after {
+      content: "";
+      position: absolute;
+      bottom: -20px; right: 2rem;
+      width: 100px; height: 60px;
+      background: url('{{ url_for("static", filename="images/cloud_white.png") }}') no-repeat center/contain;
+      opacity: .6;
+    }
+    /* 主容器浮動 */
+    .note-list-panel {
+      position: relative;
+      z-index: 3;
+      margin-top: -120px;
+      padding-top: 120px;
+      background: rgba(255,255,255,0.95);
+      border-radius: .5rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+    /* —— 搜尋按鈕 —— */
+    .btn-search {
+      background: #046EAB;
+      color: #fff;
+      border: none;
+      border-radius: 2rem;
+      padding: .5rem 1.25rem;
+      font-weight: 500;
+      transition: transform .3s ease, box-shadow .3s ease;
+    }
+    .btn-search:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+    }
+    .btn-search:active {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    }
+
+    
+    .delete-modal .modal-content {
+      border: none;
+      border-radius: 1rem;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      animation: modalFadeIn 0.4s ease-out;
+    }
+    .delete-modal .modal-header {
+      background: linear-gradient(135deg, #D32F2F, #FF6659);
+      border-bottom: none;
+      color: #fff;
+      padding: 1.5rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+    .delete-modal .modal-header .bi {
+      font-size: 1.5rem;
+    }
+    .delete-modal .modal-body {
+      padding: 1.5rem 1rem;
+      font-size: 1rem;
+      color: #333;
+      text-align: center;
+    }
+    .delete-modal .modal-footer {
+      padding: 1rem;
+      justify-content: center;
+      gap: .75rem;
+    }
+    .delete-modal .btn-confirm-delete {
+      background: linear-gradient(135deg, #C62828, #FF8A65);
+      color: #fff;
+      font-weight: 600;
+      padding: .6rem 1.5rem;
+      border-radius: .5rem;
+      border: none;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .delete-modal .btn-confirm-delete:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .delete-modal .btn-cancel-delete {
+      background: transparent;
+      color: #666;
+      border: none;
+      padding: .6rem 1.5rem;
+      font-weight: 500;
+      transition: color .2s;
+    }
+    .delete-modal .btn-cancel-delete:hover {
+      color: #333;
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+  </style>
+{% endblock %}
+
 {% block content %}
-<div class="cosmic-list">
-  <div class="container my-4 note-list-panel position-relative">
+  <!-- Hero -->
+  <div class="notes-hero">筆記列表</div>
 
-    <!-- 跳動標題 -->
-    <h2 class="note-list-title">📄 筆記列表</h2>
-
+  <div class="container note-list-panel">
     <!-- 搜尋區 -->
-    <div class="search-container d-flex justify-content-between align-items-center p-3 mb-3">
-      <form class="d-flex flex-grow-1 me-2"
-            method="get"
-            action="{{ url_for('note_list') }}">
-        <input name="q"
-               class="form-control"
-               placeholder="搜尋筆記"
-               value="{{ q }}">
-        <!-- 搜尋按鈕放在 form 內 -->
-        <button type="submit" class="btn btn-search">搜尋</button>
-      </form>
-    </div>
+    <form class="d-flex mb-4" method="get" action="{{ url_for('note_list') }}">
+      <input
+        name="q"
+        class="form-control me-2"
+        placeholder="搜尋筆記（分類／標題／內容）…"
+        value="{{ q }}"
+        autocomplete="off"
+      >
+      <button type="submit" class="btn-search">搜尋</button>
+    </form>
+
+    <!-- Flash 訊息 -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, msg in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ msg|safe }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
 
     {% if q_history %}
-      <div class="mb-4">
+      <div class="mb-3">
         <small>最近搜尋：
           {% for term in q_history %}
             <a href="{{ url_for('note_list', q=term) }}"
-               class="badge bg-secondary text-decoration-none me-1">
-              {{ term }}
-            </a>
+               class="badge bg-secondary text-decoration-none me-1">{{ term }}</a>
           {% endfor %}
         </small>
       </div>
     {% endif %}
 
     <!-- 筆記列表卡片 -->
-    <div class="row mt-4">
+    <div class="row">
       {% for note in notes %}
         <div class="col-md-6 mb-4">
           <div class="card h-100 shadow-sm">
             <div class="card-body d-flex flex-column">
               <h5 class="card-title">{{ note.title }}</h5>
-              <p class="text-muted small mb-2">{{ note.category }}</p>
+              <p class="text-muted small mb-2">{{ note.category or '未分類' }}</p>
               <p class="card-text text-truncate">{{ note.content|striptags }}</p>
               <div class="mt-auto d-flex gap-2">
-                <a href="{{ url_for('note_detail', id=note.id) }}"
-                   class="btn-rotate-gradient btn-sm me-1">檢視</a>
-                <a href="{{ url_for('note_edit', id=note.id) }}"
-                   class="btn-rotate-gradient btn-sm me-1">編輯</a>
-                <button class="btn-rotate-gradient btn-sm"
-                        data-bs-toggle="modal"
-                        data-bs-target="#confirmDeleteModal"
-                        data-note-id="{{ note.id }}"
-                        data-note-title="{{ note.title }}">
+                <a href="{{ url_for('note_detail', id=note.id) }}" class="btn btn-primary btn-sm">檢視</a>
+                <a href="{{ url_for('note_edit', id=note.id) }}" class="btn btn-warning btn-sm">編輯</a>
+                <button
+                  type="button"
+                  class="btn btn-danger btn-sm"
+                  data-bs-toggle="modal"
+                  data-bs-target="#confirmDeleteModal"
+                  data-note-id="{{ note.id }}"
+                  data-note-title="{{ note.title }}">
                   刪除
                 </button>
               </div>
@@ -63,57 +202,47 @@
         </div>
       {% endfor %}
     </div>
-
-    <!-- 分頁 -->
-    {% if total_pages > 1 %}
-      <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center">
-          {% for p in range(1, total_pages+1) %}
-            <li class="page-item {% if p==page %}active{% endif %}">
-              <a class="page-link"
-                 href="{{ url_for('note_list', q=q, page=p) }}">{{ p }}</a>
-            </li>
-          {% endfor %}
-        </ul>
-      </nav>
-    {% endif %}
-
   </div>
-</div>
 
-<!-- 刪除確認 Modal -->
-<div class="modal fade" id="confirmDeleteModal" tabindex="-1">
-  <div class="modal-dialog">
-    <form method="post" id="deleteForm">
-      <div class="modal-content">
+  <!-- 確認刪除 Modal（專業版） -->
+  <div class="modal fade delete-modal" id="confirmDeleteModal" tabindex="-1">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+      <form method="post" id="deleteForm" class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">確認刪除</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          <i class="bi bi-trash-fill"></i>
+          <h5 class="modal-title">刪除筆記</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-          <p>確定要刪除「<strong id="deleteNoteTitle"></strong>」嗎？</p>
+          <p>您確定要刪除「<strong id="deleteNoteTitle"></strong>」嗎？</p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-          <button type="submit" class="btn btn-danger">刪除</button>
+          <button type="button" class="btn btn-cancel-delete" data-bs-dismiss="modal">取消</button>
+          <button type="submit" class="btn btn-confirm-delete">
+            <i class="bi bi-check-lg me-1"></i> 確認刪除
+          </button>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
-</div>
 {% endblock %}
 
 {% block scripts %}
   {{ super() }}
   <script>
-    // 刪除 Modal
-    document.getElementById('confirmDeleteModal')
-      .addEventListener('show.bs.modal', function(e) {
+    document.addEventListener('DOMContentLoaded', () => {
+      const deleteModal = document.getElementById('confirmDeleteModal');
+      deleteModal.addEventListener('show.bs.modal', e => {
         const btn       = e.relatedTarget;
         const noteId    = btn.getAttribute('data-note-id');
         const noteTitle = btn.getAttribute('data-note-title');
         document.getElementById('deleteNoteTitle').textContent = noteTitle;
-        document.getElementById('deleteForm').action = '/note/delete/' + noteId;
+        document.getElementById('deleteForm').action =
+          "{{ url_for('note_delete', id=0) }}".replace('0', noteId);
       });
+      document.getElementById('deleteForm').addEventListener('submit', () => {
+        bootstrap.Modal.getInstance(deleteModal).hide();
+      });
+    });
   </script>
 {% endblock %}

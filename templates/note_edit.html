@@ -7,185 +7,200 @@
 
 {% block head_extra %}
   {{ super() }}
-  <!-- Quill 富文字 CSS & JS -->
+  <!-- Quill CSS -->
   <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet" />
-  <script src="https://cdn.quilljs.com/1.3.7/quill.js"></script>
-  <!-- Fabric.js 手繪／塗鴉 -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
   <style>
-    /* ======== 編輯區容器 & 標題漸層 ======== */
-    .note-detail-container {
-      max-width: 900px; width: 90%; margin: 2rem auto;
+    /* 整頁背景 */
+    body { background-color: #eefdde; }
+    .note-edit-bg {
+      padding-top: 80px;
+      min-height: calc(100vh - 80px);
+      background: linear-gradient(135deg, #c9f3dc 0%, #fce7aa 50%, #9be39a 100%);
+      position: relative;
     }
-    .edit-heading {
-      font-size: 1.75rem;
-      background: linear-gradient(45deg, #9d50bb, #6e48aa);
-      -webkit-background-clip: text; color: transparent;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    .note-edit-bg::before {
+      content: "";
+      position: absolute; top:0; left:0; right:0; height:20px;
+      background-color: #77a27c; z-index:5;
     }
 
-    /* ======== Quill 工具列 ======== */
+    /* 卡片容器 */
+    .note-detail-container {
+      width: 90%; max-width: 960px;
+      margin: 1rem auto;
+    }
+    .note-detail-container .card {
+      border: none;
+      border-radius: .75rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .card-header {
+      background-color: #fff;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .edit-heading {
+      margin: 0;
+      font-size: 1.75rem;
+      font-weight: bold;
+      color: #4e7d5b;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+    .card-body { background-color: #fff; }
+
+    /* Quill 編輯器 */
     #toolbar {
       border: 1px solid #ccc;
-      background: #f8f9fa;
-      padding: 6px;
+      background: #fafafa;
+      padding: 8px;
       border-top-left-radius: 4px;
       border-top-right-radius: 4px;
     }
-    #toolbar .ql-formats button,
-    #toolbar .ql-formats select {
-      transition: background-color .2s ease, color .2s ease;
-    }
-    #toolbar .ql-formats button:hover,
-    #toolbar .ql-formats select:hover {
-      background: rgba(0,0,0,0.05);
-    }
-
-    /* ======== Quill 編輯器本體 ======== */
     #editor {
-      min-height: 200px;
-      max-height: 400px;
-      overflow: auto;
-      resize: both;                     /* 左右+上下皆可縮放 */
-      background: #fffbe6;              /* 奶油色背景 */
-      border: 4px solid;                /* 粗邊框 */
-      border-image: linear-gradient(45deg, #4c51bf, #6b46c1) 1;
-      border-radius: 0 0 .5rem .5rem;
-      padding: 1rem;
+      min-height: 200px; max-height: 400px; overflow: auto;
+      background: #fff; border: 1px solid #ccc;
+      border-bottom-left-radius: 4px; border-bottom-right-radius: 4px;
+      padding: 1rem; resize: both;
     }
 
-    /* ======== 手繪／塗鴉 區塊 ======== */
-    .doodle-section {
-      margin-top: 2rem;
-    }
+    /* Fabric 手繪區 */
+    .doodle-section { margin-top: 2rem; }
     .doodle-section .section-heading {
-      font-size: 1.5rem; font-weight:bold;
-      background: linear-gradient(45deg, #85402f, #86f3ce);
-      -webkit-background-clip: text; color: transparent;
+      font-size: 1.5rem; font-weight: bold;
+      color: #4e7d5b; text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
       margin-bottom: .5rem;
     }
     .doodle-toolbar {
-      display: flex; align-items: center; gap: .5rem; margin-bottom: .5rem;
-    }
-    .doodle-toolbar button,
-    .doodle-toolbar input[type="color"] {
-      transition: all .2s ease;
-    }
-    .doodle-toolbar button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      display: flex; align-items: center; gap: .75rem;
+      margin-bottom: .5rem;
     }
     .doodle-container {
-      position: relative;
-      width: 100%; min-height: 300px;
-      background: #fffbe6;
-      border: 4px solid;
-      border-image: linear-gradient(90deg, #86f3ce, #2f855a) 1;
-      border-radius: .5rem;
-      overflow: hidden;
-      resize: both;                      /* 左右+上下皆可縮放 */
+      position: relative; width:100%; min-height:300px;
+      background: #fff; border:1px solid #ccc;
+      border-radius:4px; overflow:hidden; resize:both;
     }
-    .doodle-canvas {
-      width: 100%; height: 100%;
-      cursor: crosshair;
-    }
+    .doodle-canvas { width:100%; height:100%; cursor:crosshair; }
+
+    /* 按鈕 */
+    .btn-primary { background-color:#4e7d5b; border-color:#4e7d5b; }
+    .btn-secondary { background-color:#6b7d70; border-color:#6b7d70; }
+    .btn-secondary:hover { background-color:#556555; }
+
+    /* 確認儲存 Modal */
+    .confirm-modal .modal-content { border-radius: 1rem; }
+    .confirm-modal .modal-header { background:#37966f; color:#fff; }
+    .confirm-modal .btn-confirm { background:#388e3c; color:#fff; }
   </style>
 {% endblock %}
 
 {% block content %}
-<div class="note-detail-container">
-  <div class="card shadow-sm">
-    <div class="card-header bg-white">
-      <h4 class="mb-0 edit-heading">
-        {{ note and '編輯筆記' or '新增筆記' }}
-      </h4>
+<div class="note-edit-bg">
+  <div class="note-detail-container">
+    <div class="card shadow-sm">
+      <div class="card-header">
+        <h4 class="edit-heading">{{ note and '編輯筆記' or '新增筆記' }}</h4>
+      </div>
+      <div class="card-body">
+        <form
+          id="noteForm"
+          class="needs-validation"
+          novalidate
+          method="post"
+          action="{{ note and url_for('note_edit', id=note.id) or url_for('note_edit') }}"
+        >
+          <!-- 分類 -->
+          <div class="mb-3">
+            <label for="category" class="form-label fw-bold">分類</label>
+            <input
+              type="text" id="category" name="category"
+              class="form-control"
+              placeholder="例如：微積分／線性代數"
+              value="{{ note.category|default('') }}"
+              required
+            />
+            <div class="invalid-feedback">請輸入分類</div>
+          </div>
+
+          <!-- 標題 -->
+          <div class="mb-3">
+            <label for="title" class="form-label fw-bold">標題</label>
+            <input
+              type="text" id="title" name="title"
+              class="form-control"
+              placeholder="請輸入筆記標題"
+              value="{{ note.title|default('') }}"
+              required
+            />
+            <div class="invalid-feedback">請輸入標題</div>
+          </div>
+
+          <!-- 內容 (Quill) -->
+          <div class="mb-4">
+            <label class="form-label fw-bold">內容</label>
+            <div id="toolbar">
+              <select class="ql-header"><option value="1">標題 1</option><option value="2">標題 2</option><option selected>一般</option></select>
+              <button class="ql-bold"></button><button class="ql-italic"></button>
+              <button class="ql-underline"></button><button class="ql-strike"></button>
+              <select class="ql-color"></select><select class="ql-background"></select>
+              <button class="ql-list" value="ordered"></button><button class="ql-list" value="bullet"></button>
+              <button class="ql-align" value=""></button><button class="ql-align" value="center"></button><button class="ql-align" value="right"></button>
+              <button class="ql-clean"></button><button class="ql-image"></button>
+            </div>
+            <div id="editor">{{ note.content|safe if note }}</div>
+            <input type="hidden" id="hidden-content" name="content" />
+          </div>
+
+          <!-- 手繪區 -->
+          <div class="doodle-section">
+            <div class="section-heading">手繪塗鴉</div>
+            <div class="doodle-toolbar">
+              <label for="colorPicker">筆刷顏色：</label>
+              <input type="color" id="colorPicker" value="{{ note.doodle_color|default('#6e48aa') }}" />
+              <label for="brushSize">筆刷粗細：</label>
+              <input type="range" id="brushSize" min="1" max="50" value="{{ note.doodle_brush|default(3) }}" style="width:120px" />
+              <span id="brushSizeDisplay">{{ note.doodle_brush|default(3) }}</span> px
+              <button type="button" id="eraserBtn" class="btn btn-outline-secondary btn-sm">橡皮擦</button>
+              <button type="button" id="clearCanvas" class="btn btn-outline-danger btn-sm">清除畫布</button>
+            </div>
+            <div class="doodle-container">
+              <canvas id="doodleCanvas" class="doodle-canvas"></canvas>
+            </div>
+            <input type="hidden" id="hidden-doodle" name="doodle_data" />
+            <input type="hidden" id="hidden-doodle-color" name="doodle_color" />
+            <input type="hidden" id="hidden-doodle-brush" name="doodle_brush" />
+          </div>
+
+          <!-- 儲存/取消 -->
+          <button
+            type="button"
+            class="btn btn-primary me-2"
+            data-bs-toggle="modal"
+            data-bs-target="#confirmSaveModal"
+          >儲存</button>
+          <a href="{{ url_for('note_list') }}" class="btn btn-secondary">取消</a>
+        </form>
+      </div>
     </div>
-    <div class="card-body">
-      <form method="post" onsubmit="syncEditor()">
-        <!-- 分類 -->
-        <div class="mb-3">
-          <label class="form-label fw-bold">分類</label>
-          <input
-            type="text" name="category" class="form-control"
-            placeholder="例如：微積分／線性代數"
-            value="{{ note.category if note else '' }}" required
-            title="輸入分類"
-          />
-        </div>
-        <!-- 標題 -->
-        <div class="mb-3">
-          <label class="form-label fw-bold">標題</label>
-          <input
-            type="text" name="title" class="form-control"
-            placeholder="請輸入筆記標題"
-            value="{{ note.title if note else '' }}" required
-            title="輸入標題"
-          />
-        </div>
-        <!-- 內容 (Quill) -->
-        <div class="mb-4">
-          <label class="form-label fw-bold">內容</label>
-          <div id="toolbar">
-            <select class="ql-header" title="段落格式">
-              <option value="1">標題 1</option>
-              <option value="2">標題 2</option>
-              <option selected>一般</option>
-            </select>
-            <button class="ql-bold" title="粗體"></button>
-            <button class="ql-italic" title="斜體"></button>
-            <button class="ql-underline" title="底線"></button>
-            <button class="ql-strike" title="刪除線"></button>
-            <select class="ql-color" title="文字顏色"></select>
-            <select class="ql-background" title="背景顏色"></select>
-            <button class="ql-list" value="ordered" title="有序清單"></button>
-            <button class="ql-list" value="bullet" title="無序清單"></button>
-            <button class="ql-align" value="" title="左對齊"></button>
-            <button class="ql-align" value="center" title="置中"></button>
-            <button class="ql-align" value="right" title="右對齊"></button>
-            <button class="ql-link" title="插入連結"></button>
-            <button class="ql-image" title="插入圖片"></button>
-            <button class="ql-clean" title="清除格式"></button>
-          </div>
-          <div id="editor">{{ note.content|safe if note }}</div>
-          <input type="hidden" name="content" id="hidden-content" />
-        </div>
+  </div>
+</div>
 
-        <!-- 手繪／塗鴉 (Fabric.js) -->
-        <div class="doodle-section">
-          <div class="section-heading">手繪／塗鴉</div>
-          <div class="doodle-toolbar">
-            <label title="選擇筆刷顏色">筆刷顏色：</label>
-            <input type="color" id="colorPicker" value="#6e48aa" />
-            <button
-              type="button"
-              class="btn btn-sm btn-outline-secondary"
-              id="eraserBtn"
-              title="切換橡皮擦"
-            >橡皮擦</button>
-            <button
-              type="button"
-              class="btn btn-sm btn-outline-danger"
-              id="clearCanvas"
-              title="清除畫布"
-            >清除畫布</button>
-          </div>
-          <div class="doodle-container">
-            <canvas id="doodleCanvas" class="doodle-canvas"></canvas>
-          </div>
-          <input type="hidden" name="doodle_data" id="hidden-doodle" />
-        </div>
-
-        <!-- 儲存 / 取消 -->
-        <button
-          class="btn btn-primary me-2"
-          type="submit" title="儲存筆記"
-        >儲存</button>
-        <a
-          href="{{ url_for('note_list') }}"
-          class="btn btn-secondary"
-          title="取消並返回列表"
-        >取消</a>
-      </form>
+<!-- 確認儲存 Modal -->
+<div class="modal fade confirm-modal" id="confirmSaveModal" tabindex="-1">
+  <div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <i class="bi bi-save-fill me-2"></i>
+        <h5 class="modal-title">確認儲存筆記</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center">
+        <p>確定要將這份筆記連同塗鴉一起儲存嗎？</p>
+      </div>
+      <div class="modal-footer justify-content-center gap-2">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">再想想</button>
+        <button type="button" class="btn btn-primary" id="btnConfirmSave">
+          <i class="bi bi-check-lg me-1"></i> 確定儲存
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -193,61 +208,102 @@
 
 {% block scripts %}
   {{ super() }}
+  <script src="https://cdn.quilljs.com/1.3.7/quill.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
   <script>
-    // ===== Quill 初始化 =====
-    var quill = new Quill('#editor', {
-      modules: { toolbar: '#toolbar' },
-      theme: 'snow'
-    });
-
-    // ===== Fabric.js 初始化 =====
-    var canvas = new fabric.Canvas('doodleCanvas', { isDrawingMode: true });
-    function resizeCanvas() {
-      var cont = document.querySelector('.doodle-container');
-      canvas.setWidth(cont.clientWidth);
-      canvas.setHeight(cont.clientHeight);
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    // 筆刷預設
-    canvas.freeDrawingBrush.width = 3;
-    canvas.freeDrawingBrush.color = document.getElementById('colorPicker').value;
-
-    // 顏色選擇
-    document.getElementById('colorPicker')
-      .addEventListener('change', function() {
-        canvas.isDrawingMode = true;
-        canvas.freeDrawingBrush.color = this.value;
-        eraserMode = false;
-        document.getElementById('eraserBtn').classList.remove('active');
-      });
-
-    // 清除畫布
-    document.getElementById('clearCanvas').onclick = function(){
-      canvas.clear(); resizeCanvas();
-    };
-
-    // 橡皮擦切換
-    var eraserMode = false;
-    document.getElementById('eraserBtn')
-      .addEventListener('click', function(){
-        eraserMode = !eraserMode;
-        if (eraserMode) {
-          canvas.freeDrawingBrush.width = 20;       // 橡皮擦筆跡加粗
-          canvas.freeDrawingBrush.color = '#fffbe6'; // 同步背景色
-          this.classList.add('active');
-        } else {
-          canvas.freeDrawingBrush.width = 3;
-          canvas.freeDrawingBrush.color = document.getElementById('colorPicker').value;
-          this.classList.remove('active');
+    document.addEventListener('DOMContentLoaded', () => {
+      // HTML5 驗證
+      const form = document.getElementById('noteForm');
+      form.addEventListener('submit', e => {
+        if (!form.checkValidity()) {
+          e.preventDefault();
+          e.stopPropagation();
+          form.classList.add('was-validated');
         }
+      }, false);
+
+      // Quill
+      const quill = new Quill('#editor', { modules: { toolbar: '#toolbar' }, theme: 'snow' });
+      {% if note and note.content %}
+        quill.root.innerHTML = {{ note.content|tojson }};
+      {% endif %}
+
+      // Fabric
+      const canvas = new fabric.Canvas('doodleCanvas', {
+        isDrawingMode: true,
+        backgroundColor: '#fff'
+      });
+      function resizeCanvas() {
+        const cont = document.querySelector('.doodle-container');
+        canvas.setWidth(cont.clientWidth);
+        canvas.setHeight(cont.clientHeight);
+        canvas.renderAll();
+      }
+      window.addEventListener('resize', resizeCanvas);
+      resizeCanvas();
+
+      // 如果是編輯模式，先把原圖疊回去
+      {% if note and note.doodle_data %}
+        const img = new Image();
+        img.onload = () => {
+          canvas.clear(); resizeCanvas();
+          const inst = new fabric.Image(img, { left: 0, top: 0, selectable: false });
+          inst.scaleToWidth(canvas.width);
+          inst.scaleToHeight(canvas.height);
+          canvas.add(inst).sendToBack(inst);
+        };
+        img.src = "{{ note.doodle_data }}";
+      {% endif %}
+
+      // 筆刷 & 顏色控制
+      const colorPicker = document.getElementById('colorPicker');
+      const brushSize   = document.getElementById('brushSize');
+      const brushDisp   = document.getElementById('brushSizeDisplay');
+      const hiddenDoodleColor = document.getElementById('hidden-doodle-color');
+      const hiddenDoodleBrush = document.getElementById('hidden-doodle-brush');
+      const hiddenDoodleData  = document.getElementById('hidden-doodle');
+
+      // 初始化
+      canvas.freeDrawingBrush.color = colorPicker.value;
+      canvas.freeDrawingBrush.width = +brushSize.value;
+      hiddenDoodleColor.value = colorPicker.value;
+      hiddenDoodleBrush.value = brushSize.value;
+
+      colorPicker.addEventListener('change', e => {
+        canvas.freeDrawingBrush.color = e.target.value;
+        hiddenDoodleColor.value = e.target.value;
+      });
+      brushSize.addEventListener('input', e => {
+        const v = +e.target.value;
+        canvas.freeDrawingBrush.width = v;
+        brushDisp.textContent = v;
+        hiddenDoodleBrush.value = v;
       });
 
-    // 提交前同步內容
-    function syncEditor(){
-      document.getElementById('hidden-content').value = quill.root.innerHTML;
-      document.getElementById('hidden-doodle').value  = canvas.toDataURL();
-    }
+      // 橡皮擦 & 清除
+      let eraserOn = false;
+      document.getElementById('eraserBtn').addEventListener('click', () => {
+        eraserOn = !eraserOn;
+        canvas.freeDrawingBrush.color = eraserOn ? '#fff' : colorPicker.value;
+        canvas.freeDrawingBrush.width = eraserOn ? 30 : +brushSize.value;
+      });
+      document.getElementById('clearCanvas').addEventListener('click', () => {
+        canvas.clear(); resizeCanvas();
+        hiddenDoodleData.value = '';
+      });
+
+      // 確定儲存
+      document.getElementById('btnConfirmSave').addEventListener('click', () => {
+        if (!form.checkValidity()) {
+          form.classList.add('was-validated');
+          bootstrap.Modal.getInstance(document.getElementById('confirmSaveModal')).hide();
+          return;
+        }
+        // 填入 Quill 與 Doodle 的資料
+        document.getElementById('hidden-content').value = quill.root.innerHTML;
+        hiddenDoodleData.value = canvas.toDataURL();
+        form.submit();
+      });
+    });
   </script>
 {% endblock %}
